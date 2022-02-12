@@ -1,5 +1,6 @@
 from django.core import serializers
 from django.http import HttpResponse
+from django.shortcuts import render
 
 
 from random import choice
@@ -15,7 +16,6 @@ def index(request):
     words = response.json()
     random_word = choice(words)
 
-    print(random_word)
-    print(f"{random_word['spanish']}/{random_word['dutch']}")
+    context = {"word": random_word}
 
-    return HttpResponse(f"{random_word['category']['name']}: {random_word['spanish']}/{random_word['dutch']}")
+    return render(request, "core/index.html", context)
