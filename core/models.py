@@ -16,6 +16,7 @@ class Word(models.Model):
     spanish = models.CharField(max_length=50)
     dutch = models.CharField(max_length=50)
 
+    level = models.IntegerField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):

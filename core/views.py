@@ -16,6 +16,6 @@ def index(request):
     random_word = choice(words)
 
     print(random_word)
-    print(f"{random_word['category']}: {random_word['spanish']}/{random_word['dutch']}")
+    print(f"{random_word['spanish']}/{random_word['dutch']}")
 
-    return HttpResponse(f"{random_word['category']}: {random_word['spanish']}/{random_word['dutch']}")
+    return HttpResponse(f"{random_word['category']['name']}: {random_word['spanish']}/{random_word['dutch']}")
