@@ -1,7 +1,7 @@
 from rest_framework import viewsets, mixins
 
 from core.models import Word, Category
-from .serializers import WordSerializer, CategorySerializer
+from words.serializers import WordSerializer, CategorySerializer
 
 
 class WordViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):

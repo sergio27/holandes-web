@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+import os
 
 from pathlib import Path
 
@@ -20,13 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'MY-SECRET-KEY '
+SECRET_KEY = os.environ['AWS_DJANGO_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*'] if DEBUG else [os.environ['AWS_HOST_URL']]
 
 # Application definition
 
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_s3_storage',
     'rest_framework',
     'core',
     'words'
@@ -78,8 +79,9 @@ WSGI_APPLICATION = 'holandes.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        "ENGINE": "django_s3_sqlite" if not DEBUG else "django.db.backends.sqlite3",
+        "NAME": "sqlite_zappa.db",
+        "BUCKET": os.environ['AWS_BUCKET'] if not DEBUG else "",
     }
 }
 
@@ -118,7 +120,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'core/static/'
+if not DEBUG:
+    YOUR_S3_BUCKET = "AWS_BUCKET_STATIC"
+
+    STATICFILES_STORAGE = "django_s3_storage.storage.StaticS3Storage"
+    AWS_S3_BUCKET_NAME_STATIC = YOUR_S3_BUCKET
+
+    # These next two lines will serve the static files directly
+    # from the s3 bucket
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % YOUR_S3_BUCKET
+    STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
+else:
+    STATIC_URL = "/core/static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

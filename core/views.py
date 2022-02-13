@@ -1,13 +1,12 @@
-from django.core import serializers
-from django.http import HttpResponse
 from django.shortcuts import render
 
 
 from random import choice
 
+import os
 import requests
 
-API_URL = "http://localhost:8000/api/"
+API_URL = os.environ['AWS_API_URL']
 
 
 def index(request):

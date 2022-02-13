@@ -2,7 +2,7 @@ from django.urls import path, include
 
 from rest_framework.routers import DefaultRouter
 
-from . import views
+from words import views
 
 router = DefaultRouter()
 router.register('words', views.WordViewSet)
